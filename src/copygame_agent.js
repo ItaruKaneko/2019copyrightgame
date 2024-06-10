@@ -1,4 +1,4 @@
-// copygame01_04
+// copygame01_06
 // 2019/6/17
 // copygame_agentのクラスの定義
 // 初期化
@@ -6,6 +6,7 @@
 // copygame01_03 ルール
 // エージェントは2タイプ
 //  type 1 creator
+//    ep 初期値 = 4
 //    1%の確率で行う。
 //    エネルギーが 2 以上なら自分をauthorとして記録する
 //    エネルギーは 1 減らす
@@ -34,14 +35,13 @@ game_cell.prototype.show=function(){
     y1 = Math.floor(this.y);
     c1.beginPath();
     h1 = this.st*5;
-    c1.rect(x1,580-y1-h1, 10,h1);
+    c1.rect(x1,380-y1-h1, 10,h1);
     if(this.st==1){
       c1.fillStyle = 'rgb(255,0,128)'; // 黄色
     }else{
       c1.fillStyle = 'rgb(255,128,0)'; // 黄色
     }
     c1.fill();
-
 }
 
 // (ix,iy)は (x.y)の整数値
@@ -57,7 +57,7 @@ function copygame_agent(aid1,gb1,ty1) {
   this.y = 0;
   this.vx = Math.random() * 50 - 25;
   this.vy = 0;
-  this.ep = 20;  //  energy point = 0
+  this.ep = 4;  //  energy point = 0
   this.ix=Math.floor(this.x);
   this.iy=Math.floor(this.y);
 }
@@ -74,17 +74,17 @@ copygame_agent.prototype.progress = function() {
 
  if(this.type==1){
     // creator type
-    if(this.iy==0){
+    if(this.iy==0 && this.ep>0){
+      // エネルギーが残っており、iy=0の場合
       var rr=Math.random();
+      if (rr < 0.02){
+        // 2% の確率でエネルギーを減らす
+        this.ep = this.ep - 1;
+      }
       if (rr < 0.01){
-        if(this.ep>2){
-          // まずエネルギーを減らす
-          this.ep = this.ep - 1;
-          // もし 地面で ip>10
-
-          this.gb[this.ix].st = 1;
-          this.gb[this.ix].author=this;
-        }
+        // 1%の確率で作品を残す
+        this.gb[this.ix].st = 1;
+        this.gb[this.ix].author=this;
       }
     }
   }
@@ -97,6 +97,7 @@ copygame_agent.prototype.progress = function() {
         this.vy = this.ep; // エネルギー分ジャンプ
         author1 = gb[this.ix].author;
         author1.ep = author1.ep + 1;
+        this.ep = this.ep + 1;
       }
       else {
         // マークがなければそのままの位置でマーク
@@ -138,7 +139,7 @@ copygame_agent.prototype.show = function() {
   
     
     c1.beginPath();
-    c1.arc(x1,570-y1, this.ep, 0, Math.PI * 2);
+    c1.arc(x1,330-y1, this.ep, 0, Math.PI * 2);
     if(this.type==1){
       c1.fillStyle = 'rgb(0,255,128)'; // 紺色
     }else{
@@ -150,4 +151,3 @@ copygame_agent.prototype.show = function() {
     c1.shadowBlur = 5;
     c1.fill();
 }
-

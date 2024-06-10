@@ -21,3 +21,10 @@
     border-width: 1px;
     box-shadow: 8px 8px 5px #888;
   }
+#canvas_tag_2 {
+    float: top;
+    border-color: #aaa;
+    border-style: solid;
+    border-width: 1px;
+    box-shadow: 8px 8px 5px #888;
+  }
