@@ -4,10 +4,8 @@
 // copygame_agentのクラスの定義
 // 初期化
 // gb 長さ600の配列
-//   use count を使用することに 1 増加する
-//   5 回に達したら消去
 // copygame02_01 ルール
-// エージェントは2タイプ
+// エージェントは3タイプ
 //  type 1 creator
 //    ep 初期値 = 4
 //    1%の確率で行う。
@@ -31,7 +29,6 @@ function game_cell(x1,y1) {
   this.y=y1;
   this.st = 0; // status = 0
   this.author = null;    // copy game agent marking here
-  this.ucount = 0;  // use count
 }
 
 game_cell.prototype.show=function(){
@@ -42,26 +39,13 @@ game_cell.prototype.show=function(){
     y1 = Math.floor(this.y);
     c1.beginPath();
     h1 = this.st*5;
+    c1.rect(x1,380-y1-h1, 10,h1);
     if(this.st==1){
-      c1.fillStyle = 'rgb(0,0,128)'; // 黄色
+      c1.fillStyle = 'rgb(255,0,128)'; // 黄色
     }else{
-      c1.fillStyle = 'rgb(128,255,255)'; // 水色
+      c1.fillStyle = 'rgb(255,128,0)'; // 黄色
     }
-    c1.rect(x1,350, 5,5);
     c1.fill();
-}
-
-game_cell.prototype.use=function(){
-  // このゲームセルのコンテンツを使う
-  author1 = this.author;
-  author1.ep = author1.ep + 1;
-  this.ucount = this.ucount + 1;
-  if (this.ucount >=5) {
-    this.author = null;
-    this.st = 0;
-    this.ucount=0;
-  }
-
 }
 
 // (ix,iy)は (x.y)の整数値
@@ -81,7 +65,6 @@ function copygame_agent(aid1,gb1,ty1) {
   this.ix=Math.floor(this.x);
   this.iy=Math.floor(this.y);
 }
-
 
 // move : 移動
 // 一番上（iy=0) 
@@ -116,10 +99,8 @@ copygame_agent.prototype.progress = function() {
         // マーク済の位置にあれば、ジャンプ
         this.y = 1;
         this.vy = this.ep; // エネルギー分ジャンプ
-        
-        gb[this.ix].use();
-        // author1 = gb[this.ix].author;
-        // author1.ep = author1.ep + 1;
+        author1 = gb[this.ix].author;
+        author1.ep = author1.ep + 1;
         this.ep = this.ep + 1;
       }
       else {

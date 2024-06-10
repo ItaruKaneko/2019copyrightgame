@@ -4,6 +4,7 @@ var c2;        // グラフ描画コンテキスト
 var copygame_agents;     // 全 copygame_agent を格納する配列
 var number_of_copygame_agents; // copygame_agent の数
 var number_of_creators; // copygame_agent の数
+var number_of_pirates; // pirates の数
 var gb;        // game bord, sixze 600
 var tick_count1;      // tick count 1
 
@@ -117,19 +118,25 @@ function draw_canvas() {
     gb[n]=new game_cell(n,0);
   }
   // copygame_agent数の設定
-  number_of_copygame_agents = 40;
+  number_of_copygame_agents = 50;
+  number_of_pirates = 10;
   number_of_creators = 20;
 
   // 全copygame_agentを格納する配列の準備
   copygame_agents = new Array(number_of_copygame_agents);  
   // 全copygame_agentの初期化
-  for (var n = 0; n < number_of_creators; n++) {
+  for (var n = 0; n < number_of_copygame_agents; n++) {
+    if(n < number_of_creators) {
     copygame_agents[n]=new copygame_agent(n,gb,1);
+    }
+    else if (n < number_of_creators + number_of_pirates ) {
+      copygame_agents[n]=new copygame_agent(n,gb,3);
+    }
+    else {
+      copygame_agents[n]=new copygame_agent(n,gb,2);
+    }
   }
-  for (var n = number_of_creators; n < number_of_copygame_agents; n++) {
-    copygame_agents[n]=new copygame_agent(n,gb,2);
-  }
-
+  
   // tick1 を毎秒 30 回実行するための設定
   plot_axis();
   setInterval(tick1, 100);
