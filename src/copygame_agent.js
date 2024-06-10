@@ -1,6 +1,7 @@
-// copygame04_02
+// copygame04_04
 // 2019/11/21
 // 概要 概要 スペースの2D化(表示は3D 影付き)
+// pirates は y>=150で活動。かつ creator はy方向の移動は少ないとする
 // copygame_agentのクラスの定義
 // 初期化
 // gb 長さ90000の配列
@@ -94,6 +95,9 @@ function copygame_agent(aid1,gb1,ty1) {
   this.z = 0;
   this.vx = Math.random() * 20 - 10;
   this.vy = Math.random() * 20 - 10;
+  if (ty1==1) { // author is in same raw 
+    this.vy=0;
+  }
   this.vz = 0;
   this.ep = 4;  //  energy point = 0
   this.nn=Math.floor(this.y) * 300 + Math.floor(this.x);
@@ -149,15 +153,18 @@ copygame_agent.prototype.progress = function() {
   // type3 pirates
   else if(this.type==3){
     // pirate type
-    if (this.iz==0) {
-      if (this.gb[this.nn].st==1) {
-        var author1;
-        // マーク済の位置にあれば、マークを自分に変更
-        gb[this.nn].author = this;
-      }
-      else {
-        // マークがなければそのままの位置でマーク
-
+    if (this.y >= 150){
+      if (this.iz==0) {
+        if (this.gb[this.nn].st==1) {
+          this.gb[this.nn].st=2;
+          var author1;
+          // マーク済の位置にあれば、マークを自分に変更
+          gb[this.nn].author = this;
+        }
+        else {
+          // マークがなければそのままの位置でマーク
+  
+        }
       }
     }
   }
