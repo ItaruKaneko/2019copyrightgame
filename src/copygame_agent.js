@@ -1,12 +1,13 @@
-// copygame02_01
-// 2019/6/18
-// 概要 海賊版業者の導入
+// copygame04_01
+// 2019/11/21
+// 概要 スペースの2D化(表示は3D)
 // copygame_agentのクラスの定義
 // 初期化
-// gb 長さ600の配列
+// gb 長さ90000の配列
+//   30 x 30 の配列
 //   use count を使用することに 1 増加する
 //   5 回に達したら消去
-// copygame02_01 ルール
+// copygame04_01 ルール
 // エージェントは2タイプ
 //  type 1 creator
 //    ep 初期値 = 4
@@ -22,12 +23,15 @@
 //  type 3 pirates
 //     もしst=1ならインデックスを自分に書き換える
 //     エネルギーは減らさない
+//  game cell は 10 x 10 のエリア、30 x 30 マス
 // 
 
 // class definition : game_cell
 // ゲームのます目の定義
-function game_cell(x1,y1) {
-  this.x=x1;
+function game_cell(n1,x1,y1) {
+  this.n=n1; // cell number
+  this.x=x1; // cell's x coordinate
+ // this.y=0;  // cell's y coordinate
   this.y=y1;
   this.st = 0; // status = 0
   this.author = null;    // copy game agent marking here
@@ -37,17 +41,28 @@ function game_cell(x1,y1) {
 game_cell.prototype.show=function(){
    // rect を描画
     // y 座標を整数に変換してから描画する    
-    var x1,y1,h1;
+    var x1,y1;
     x1 = Math.floor(this.x);
     y1 = Math.floor(this.y);
     c1.beginPath();
+    c1.shadowColor = 'rgb(0,0,0)';   // 影
+    c1.shadowOffsetX = 0;
+    c1.shadowOffsetY = 0;
+    c1.shadowBlur = 0;
+
     h1 = this.st*5;
     if(this.st==1){
       c1.fillStyle = 'rgb(0,0,128)'; // 黄色
     }else{
       c1.fillStyle = 'rgb(128,255,255)'; // 水色
     }
-    c1.rect(x1,350, 5,5);
+//    c1.rect(x1*10,350-y1*10, 5,5);
+    c1.moveTo(x1*10+y1*10,350-y1*10);
+    c1.lineTo(x1*10+y1*10+5,350-y1*10);
+    c1.lineTo(x1*10+y1*10+10,350-y1*10-5);
+    c1.lineTo(x1*10+y1*10+5,350-y1*10-5);
+    c1.lineTo(x1*10+y1*10,350-y1*10);
+    c1.closePath();
     c1.fill();
 }
 
@@ -61,10 +76,9 @@ game_cell.prototype.use=function(){
     this.st = 0;
     this.ucount=0;
   }
-
 }
 
-// (ix,iy)は (x.y)の整数値
+// (ix,iz)は (x.z)の整数値
 // 初期化により x,vx はランダムに
 // 10<x<580, -25<x<25
 // y, vyは0に初期化
@@ -73,29 +87,31 @@ function copygame_agent(aid1,gb1,ty1) {
   this.aid=aid1;
   this.gb = gb1;    // game board
   this.type = ty1;    // agent type = 2
-  this.x = Math.random() * 570 + 10;
-  this.y = 0;
-  this.vx = Math.random() * 50 - 25;
-  this.vy = 0;
-  this.ep = 4;  //  energy point = 0
-  this.ix=Math.floor(this.x);
-  this.iy=Math.floor(this.y);
+  this.x = Math.random() * 270 + 10;
+  this.y = Math.random() * 270 + 10;
+  this.z = 0;
+  this.vx = Math.random() * 20 - 10;
+  this.vy = Math.random() * 20 - 10;
+  this.vz = 0;
+    this.ep = 4;  //  energy point = 0
+  this.nn=Math.floor(this.y) * 300 + Math.floor(this.x);
+  this.iz=Math.floor(this.z);
 }
 
 
 // move : 移動
 // 一番上（iy=0) 
-//   gb[this.ix].st=0 なら gb[this.ix].stを1に
-//   gb[this.ix].st=1 なら
+//   gb[this.nn].st=0 なら gb[this.nn].stを1に
+//   gb[this.nn].st=1 なら
 // y座標を1, vyを10にする
 
 copygame_agent.prototype.progress = function() {
-  this.ix=Math.floor(this.x);
-  this.iy=Math.floor(this.y);
+  this.nn=Math.floor(this.x / 10) + Math.floor(this.y / 10)*30;
+  this.iz=Math.floor(this.z);
 
  if(this.type==1){
     // creator type
-    if(this.iy==0 && this.ep>0){
+    if(this.iz==0 && this.ep>0){
       // エネルギーが残っており、iy=0の場合
       var rr=Math.random();
       if (rr < 0.02){
@@ -104,21 +120,21 @@ copygame_agent.prototype.progress = function() {
       }
       if (rr < 0.01){
         // 1%の確率で作品を残す
-        this.gb[this.ix].st = 1;
-        this.gb[this.ix].author=this;
+        this.gb[this.nn].st = 1;
+        this.gb[this.nn].author=this;
       }
     }
   }
   else if(this.type==2) {
-    if (this.iy==0) {
-      if (this.gb[this.ix].st==1) {
+    if (this.iz==0) {
+      if (this.gb[this.nn].st==1) {
         var author1;
         // マーク済の位置にあれば、ジャンプ
-        this.y = 1;
-        this.vy = this.ep; // エネルギー分ジャンプ
+        this.z = 1;
+        this.vz = this.ep; // エネルギー分ジャンプ
         
-        gb[this.ix].use();
-        // author1 = gb[this.ix].author;
+        gb[this.nn].use();
+        // author1 = gb[this.nn].author;
         // author1.ep = author1.ep + 1;
         this.ep = this.ep + 1;
       }
@@ -128,17 +144,20 @@ copygame_agent.prototype.progress = function() {
       }
     }
   }
-  else if(this.type==4){
-    // pirate type
-    if (this.iy==0) {
-      if (this.gb[this.ix].st==1) {
-        var author1;
-        // マーク済の位置にあれば、マークを自分に変更
-        gb[this.ix].author = this;
-      }
-      else {
-        // マークがなければそのままの位置でマーク
-
+  // type3 pirates
+  else if(this.type==3){
+    // pirate allowed only if y>150
+    if(this.y >= 150){
+      if (this.iz==0) {
+        if (this.gb[this.nn].st==1) {
+          var author1;
+          // マーク済の位置にあれば、マークを自分に変更
+          gb[this.nn].author = this;
+        }
+        else {
+          // マークがなければそのままの位置でマーク
+  
+        }
       }
     }
   }
@@ -146,24 +165,31 @@ copygame_agent.prototype.progress = function() {
 }
 copygame_agent.prototype.move = function() {
   // consumer type
-  if(this.ix < 0 || this.ix>=600) {
-    console("heelo")
+  if(this.nn < 0 || this.nn>=90000) {
+    console("error, this.nn range")
   }
-  if (this.x < 10  || this.x > 580) {
+  if (this.x < 10  || this.x > 280) {
       this.vx = - this.vx;
-  }    // gravity
-  if (this.y > 0) {
-    this.vy -= 1;
+  }  
+  if (this.y < 10  || this.y > 280) {
+    this.vy = - this.vy;
+}  
+// gravity
+  if (this.z > 0) {
+    this.vz -= 1;
   }
   // motion
   this.x += this.vx;
-  if (this.x <0) this.x=0;
-  if (this.x>=600) this.x=599;
   this.y += this.vy;
+  if (this.x <0) this.x=0;
+  if (this.x>=300) this.x=299;
+  if (this.y <0) this.y=0;
+  if (this.y>=300) this.y=299;
+  this.z += this.vz;
   // collision with ground
-  if (this.y<0) {
-    this.y=0;
-    this.vy=0;
+  if (this.z<0) {
+    this.z=0;
+    this.vz=0;
   }
 }
 
@@ -171,13 +197,13 @@ copygame_agent.prototype.move = function() {
 copygame_agent.prototype.show = function() {
   // 円を描画
     // y 座標を整数に変換してから描画する    
-    var x1,y1;
-    x1 = Math.floor(this.x);
-    y1 = Math.floor(this.y);
-  
-    
+    var x1,z1;
+    x1 = Math.floor(this.x + this.y * 1.0);
+    z1 = Math.floor(this.z + this.y* 1.0);
+    z2 = Math.floor(this.z);
+          
     c1.beginPath();
-    c1.arc(x1,330-y1, this.ep, 0, Math.PI * 2);
+    c1.arc(x1,330-z1-z2, this.ep, 0, Math.PI * 2);
     if(this.type==1){
       c1.fillStyle = 'rgb(0,255,128)'; // 紺色
     }else if (this.type == 2){
@@ -186,9 +212,9 @@ copygame_agent.prototype.show = function() {
       c1.fillStyle = 'rgb(255,128,128)'; // 紺色
     }
     c1.shadowColor = 'rgb(0,0,0)';   // 影
-    c1.shadowOffsetX = 5;
-    c1.shadowOffsetY = 5;
-    c1.shadowBlur = 5;
+    c1.shadowOffsetX = 0;
+    c1.shadowOffsetY = z2 +5;
+    c1.shadowBlur = 2;
+    c1.closePath();
     c1.fill();
 }
-

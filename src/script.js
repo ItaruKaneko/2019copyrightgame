@@ -86,14 +86,14 @@ function tick1() {
 
   // 20個の円についてのループ
   var n;
+  for (n = 0; n < 900; n++){
+    gb[n].show();
+  }
   for (n = 0; n < number_of_copygame_agents; n++) {
     // copygame_agent を移動し、描画する
     copygame_agents[n].progress();
     copygame_agents[n].move();
     copygame_agents[n].show();
-  }
-  for (n = 0; n < 600; n++){
-    gb[n].show();
   }
   plot_status();
 }
@@ -112,10 +112,14 @@ function draw_canvas() {
       return false;
   }
   tick_count1=0; // tick count をゼロリセット
-  gb = new Array(600);
+  gb = new Array(90000);
   // game bord のクリア
-  for (var n=0; n<600; n++) {
-    gb[n]=new game_cell(n,0);
+  var n1=0;
+  for (var y1=0; y1<30; y1++) {
+    for (var x1=0; x1<30; x1++) {
+      gb[n1]=new game_cell(n1,x1,y1);
+      n1++;
+    }
   }
   // copygame_agent数の設定
   number_of_copygame_agents = 50;
