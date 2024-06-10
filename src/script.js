@@ -89,6 +89,7 @@ function tick1() {
   for (n = 0; n < 900; n++){
     gb[n].show();
   }
+  //game_title();
   for (n = 0; n < number_of_copygame_agents; n++) {
     // copygame_agent を移動し、描画する
     copygame_agents[n].progress();

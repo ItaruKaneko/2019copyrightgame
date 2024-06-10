@@ -1,13 +1,13 @@
-// copygame04_01
+// copygame04_02
 // 2019/11/21
-// 概要 スペースの2D化(表示は3D)
+// 概要 概要 スペースの2D化(表示は3D 影付き)
 // copygame_agentのクラスの定義
 // 初期化
 // gb 長さ90000の配列
 //   30 x 30 の配列
 //   use count を使用することに 1 増加する
 //   5 回に達したら消去
-// copygame04_01 ルール
+// copygame02_01 ルール
 // エージェントは2タイプ
 //  type 1 creator
 //    ep 初期値 = 4
@@ -93,7 +93,7 @@ function copygame_agent(aid1,gb1,ty1) {
   this.vx = Math.random() * 20 - 10;
   this.vy = Math.random() * 20 - 10;
   this.vz = 0;
-    this.ep = 4;  //  energy point = 0
+  this.ep = 4;  //  energy point = 0
   this.nn=Math.floor(this.y) * 300 + Math.floor(this.x);
   this.iz=Math.floor(this.z);
 }
@@ -108,7 +108,7 @@ function copygame_agent(aid1,gb1,ty1) {
 copygame_agent.prototype.progress = function() {
   this.nn=Math.floor(this.x / 10) + Math.floor(this.y / 10)*30;
   this.iz=Math.floor(this.z);
-
+ // type1 author
  if(this.type==1){
     // creator type
     if(this.iz==0 && this.ep>0){
@@ -125,6 +125,7 @@ copygame_agent.prototype.progress = function() {
       }
     }
   }
+  // type2 consumer
   else if(this.type==2) {
     if (this.iz==0) {
       if (this.gb[this.nn].st==1) {
@@ -144,24 +145,21 @@ copygame_agent.prototype.progress = function() {
       }
     }
   }
-  // type3 pirates
-  else if(this.type==3){
-    // pirate allowed only if y>150
-    if(this.y >= 150){
-      if (this.iz==0) {
-        if (this.gb[this.nn].st==1) {
-          var author1;
-          // マーク済の位置にあれば、マークを自分に変更
-          gb[this.nn].author = this;
-        }
-        else {
-          // マークがなければそのままの位置でマーク
-  
-        }
+  // type4 pirates
+  else if(this.type==4){
+    // pirate type
+    if (this.iz==0) {
+      if (this.gb[this.nn].st==1) {
+        var author1;
+        // マーク済の位置にあれば、マークを自分に変更
+        gb[this.nn].author = this;
+      }
+      else {
+        // マークがなければそのままの位置でマーク
+
       }
     }
   }
-
 }
 copygame_agent.prototype.move = function() {
   // consumer type
@@ -203,6 +201,7 @@ copygame_agent.prototype.show = function() {
     z2 = Math.floor(this.z);
           
     c1.beginPath();
+
     c1.arc(x1,330-z1-z2, this.ep, 0, Math.PI * 2);
     if(this.type==1){
       c1.fillStyle = 'rgb(0,255,128)'; // 紺色
@@ -211,10 +210,30 @@ copygame_agent.prototype.show = function() {
     }else{
       c1.fillStyle = 'rgb(255,128,128)'; // 紺色
     }
-    c1.shadowColor = 'rgb(0,0,0)';   // 影
+    c1.shadowColor = 'rgb(128,128,128,)';   // 影
     c1.shadowOffsetX = 0;
-    c1.shadowOffsetY = z2 +5;
+    c1.shadowOffsetY = z2+5;
     c1.shadowBlur = 2;
     c1.closePath();
     c1.fill();
+}
+function game_title(){
+  c1.beginPath();
+  c1.rect(50,50,50,50);
+  c1.fillStyle = 'rgb(0,255,128)'; // 紺色
+  c1.shadowColor = 'rgb(255,0,0)';   // 影
+  c1.shadowOffsetX = 0;
+  c1.shadowOffsetY = 10;
+  c1.shadowBlur = 2;
+  c1.closePath();
+  c1.fill();
+  c1.beginPath();
+  c1.rect(150,50,50,50);
+  c1.closePath();
+  c1.fillStyle = 'rgb(0,255,128)'; // 紺色
+  c1.shadowColor = 'rgb(0,0,0)';   // 影
+  c1.shadowOffsetX = 0;
+  c1.shadowOffsetY = 20;
+  c1.shadowBlur = 2;
+  c1.fill();
 }
