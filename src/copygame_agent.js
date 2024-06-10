@@ -95,9 +95,9 @@ function copygame_agent(aid1,gb1,ty1) {
   this.z = 0;
   this.vx = Math.random() * 20 - 10;
   this.vy = Math.random() * 20 - 10;
-  if (ty1==1) { // author is in same raw 
-    this.vy=0;
-  }
+  //if (ty1==1) { // author is in same raw 
+  //  this.vy=0;
+  //}
   this.vz = 0;
   this.ep = 4;  //  energy point = 0
   this.nn=Math.floor(this.y) * 300 + Math.floor(this.x);
