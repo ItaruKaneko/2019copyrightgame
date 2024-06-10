@@ -77,41 +77,10 @@ function plot_axis(){
   //c2.filltext("tick",210,220)
 }
 
-// copygame_agent クラスを使ったアニメーションの本体
-// 毎秒 30 回実行する関数
-function tick1() {
-  tick_count1=tick_count1+1;
-  // 描画領域をいったんクリアする
-  c1.clearRect(0, 0, 600, 600);
-
-  // 20個の円についてのループ
-  var n;
-  for (n = 0; n < 900; n++){
-    gb[n].show();
-  }
-  //game_title();
-  for (n = 0; n < number_of_copygame_agents; n++) {
-    // copygame_agent を移動し、描画する
-    copygame_agents[n].progress();
-    copygame_agents[n].move();
-    copygame_agents[n].show();
-  }
-  plot_status();
-}
-
 // 初期化
-function draw_canvas() {
-  // c1 = 2d コンテキスト、を用意する
-  var canv1 = document.getElementById('canvas_tag_1');
-  c1 = canv1.getContext('2d');
-  if (!canv1 || !canv1.getContext) {
-      return false;
-  }
-  var canv2 = document.getElementById('canvas_tag_2');
-  c2 = canv2.getContext('2d');
-  if (!canv2 || !canv2.getContext) {
-      return false;
-  }
+function init_simulation(){
+  c2.clearRect(0, 0, 600, 600);
+  plot_axis()
   tick_count1=0; // tick count をゼロリセット
   gb = new Array(90000);
   // game bord のクリア
@@ -141,7 +110,49 @@ function draw_canvas() {
       copygame_agents[n]=new copygame_agent(n,gb,2);
     }
   }
-  
+
+}
+
+// copygame_agent クラスを使ったアニメーションの本体
+// 毎秒 30 回実行する関数
+function tick1() {
+  tick_count1=tick_count1+1;
+  // 描画領域をいったんクリアする
+  c1.clearRect(0, 0, 600, 600);
+
+  // 20個の円についてのループ
+  var n;
+  for (n = 0; n < 900; n++){
+    gb[n].show();
+  }
+  //game_title();
+  for (n = 0; n < number_of_copygame_agents; n++) {
+    // copygame_agent を移動し、描画する
+    copygame_agents[n].progress();
+    copygame_agents[n].move();
+    copygame_agents[n].show();
+  }
+  if (tick_count1 > 500) {
+    init_simulation()
+  }
+  plot_status();
+}
+
+// canvas 初期化
+function draw_canvas() {
+  // c1 = 2d コンテキスト、を用意する
+  var canv1 = document.getElementById('canvas_tag_1');
+  c1 = canv1.getContext('2d');
+  if (!canv1 || !canv1.getContext) {
+      return false;
+  }
+  var canv2 = document.getElementById('canvas_tag_2');
+  c2 = canv2.getContext('2d');
+  if (!canv2 || !canv2.getContext) {
+      return false;
+  }
+
+  init_simulation()
   // tick1 を毎秒 30 回実行するための設定
   plot_axis();
   setInterval(tick1, 100);
