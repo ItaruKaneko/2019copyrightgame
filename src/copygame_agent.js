@@ -128,7 +128,7 @@ copygame_agent.prototype.progress = function() {
       }
     }
   }
-  else if(this.type==3){
+  else if(this.type==4){
     // pirate type
     if (this.iy==0) {
       if (this.gb[this.ix].st==1) {

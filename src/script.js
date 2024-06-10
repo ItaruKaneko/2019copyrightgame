@@ -119,8 +119,8 @@ function draw_canvas() {
   }
   // copygame_agent数の設定
   number_of_copygame_agents = 50;
-  number_of_pirates = 10;
-  number_of_creators = 20;
+  number_of_pirates = 20;
+  number_of_creators = 10;
 
   // 全copygame_agentを格納する配列の準備
   copygame_agents = new Array(number_of_copygame_agents);  
