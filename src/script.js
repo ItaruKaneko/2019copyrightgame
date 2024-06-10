@@ -14,8 +14,12 @@ function tick1() {
   var n;
   for (n = 0; n < number_of_copygame_agents; n++) {
     // copygame_agent を移動し、描画する
+    copygame_agents[n].progress();
     copygame_agents[n].move();
     copygame_agents[n].show();     
+  }
+  for (n = 0; n < 600; n++){
+    gb[n].show();
   }
 }
 
@@ -30,7 +34,7 @@ function draw_canvas() {
   gb = new Array(600);
   // game bord のクリア
   for (var n=0; n<600; n++) {
-    gb[n]=new game_cell();
+    gb[n]=new game_cell(n,0);
   }
   // copygame_agent数の設定
   number_of_copygame_agents = 20;
@@ -38,8 +42,11 @@ function draw_canvas() {
   // 全copygame_agentを格納する配列の準備
   copygame_agents = new Array(number_of_copygame_agents);  
   // 全copygame_agentの初期化
-  for (var n = 0; n < number_of_copygame_agents; n++) {
-    copygame_agents[n]=new copygame_agent(gb);
+  for (var n = 0; n < 5; n++) {
+    copygame_agents[n]=new copygame_agent(gb,1);
+  }
+  for (var n = 5; n < number_of_copygame_agents; n++) {
+    copygame_agents[n]=new copygame_agent(gb,2);
   }
 
   // tick1 を毎秒 30 回実行するための設定
