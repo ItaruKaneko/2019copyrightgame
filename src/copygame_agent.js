@@ -53,7 +53,9 @@ game_cell.prototype.show=function(){
     h1 = this.st*5;
     if(this.st==1){
       c1.fillStyle = 'rgb(0,0,128)'; // 黄色
-    }else{
+    } else if (this.st==2) {
+      c1.fillStyle = 'rgb(255,128,128)'; // 赤
+    } else{
       c1.fillStyle = 'rgb(128,255,255)'; // 水色
     }
 //    c1.rect(x1*10,350-y1*10, 5,5);
@@ -128,12 +130,11 @@ copygame_agent.prototype.progress = function() {
   // type2 consumer
   else if(this.type==2) {
     if (this.iz==0) {
-      if (this.gb[this.nn].st==1) {
+      if (this.gb[this.nn].st>=1) {
         var author1;
         // マーク済の位置にあれば、ジャンプ
         this.z = 1;
         this.vz = this.ep; // エネルギー分ジャンプ
-        
         gb[this.nn].use();
         // author1 = gb[this.nn].author;
         // author1.ep = author1.ep + 1;
@@ -145,8 +146,8 @@ copygame_agent.prototype.progress = function() {
       }
     }
   }
-  // type4 pirates
-  else if(this.type==4){
+  // type3 pirates
+  else if(this.type==3){
     // pirate type
     if (this.iz==0) {
       if (this.gb[this.nn].st==1) {
@@ -204,11 +205,11 @@ copygame_agent.prototype.show = function() {
 
     c1.arc(x1,330-z1-z2, this.ep, 0, Math.PI * 2);
     if(this.type==1){
-      c1.fillStyle = 'rgb(0,255,128)'; // 紺色
+      c1.fillStyle = 'rgb(0,255,128)'; // creator = 緑
     }else if (this.type == 2){
-      c1.fillStyle = 'rgb(0,128,255)'; // 紺色
+      c1.fillStyle = 'rgb(0,128,255)'; // consumer = 青
     }else{
-      c1.fillStyle = 'rgb(255,128,128)'; // 紺色
+      c1.fillStyle = 'rgb(255,128,128)'; // pirate = ピンク
     }
     c1.shadowColor = 'rgb(128,128,128,)';   // 影
     c1.shadowOffsetX = 0;
