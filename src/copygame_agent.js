@@ -6,17 +6,15 @@
 // copygame01_03 ルール
 // エージェントは2タイプ
 //  type 1 creator
-//    エネルギーが 10 以上なら、マークする
+//    1%の確率で行う。
+//    エネルギーが 2 以上なら自分をauthorとして記録する
+//    エネルギーは 1 減らす
 //  type 2 consumer
-//   マークされている場合
-//     エネルギーが増える
-//     エネルギー分ジャンプする
+//   Author が登録されている場合
+//     author のエネルギーを +1 増加する
+//     ジャンプする
 //   マークされていない場合
-//      マークする
-//   高さ0以外の場合
-//     自由運動する
-// 前のバージョンからの変更
-//   game_cell を構造体に修正
+//     自由運する
 // 
 
 // class definition : game_cell
@@ -25,7 +23,7 @@ function game_cell(x1,y1) {
   this.x=x1;
   this.y=y1;
   this.st = 0; // status = 0
-  this.mark = 0;    // copy game agent marking here
+  this.author = null;    // copy game agent marking here
 }
 
 game_cell.prototype.show=function(){
@@ -85,7 +83,7 @@ copygame_agent.prototype.progress = function() {
           // もし 地面で ip>10
 
           this.gb[this.ix].st = 1;
-          this.gb[this.ix].mark=this;
+          this.gb[this.ix].author=this;
         }
       }
     }
@@ -93,11 +91,12 @@ copygame_agent.prototype.progress = function() {
   else if(this.type==2) {
     if (this.iy==0) {
       if (this.gb[this.ix].st==1) {
+        var author1;
         // マーク済の位置にあれば、ジャンプ
         this.y = 1;
         this.vy = this.ep; // エネルギー分ジャンプ
-        this.gb[this.ix].st = 0;
-        this.ep = this.ep + 1;  // エネルギー増加
+        author1 = gb[this.ix].author;
+        author1.ep = author1.ep + 1;
       }
       else {
         // マークがなければそのままの位置でマーク
