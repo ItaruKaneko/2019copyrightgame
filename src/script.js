@@ -27,10 +27,10 @@ function draw_canvas() {
   if (!canv1 || !canv1.getContext) {
       return false;
   }
-  gb = new Array(600); 
+  gb = new Array(600);
   // game bord のクリア
   for (var n=0; n<600; n++) {
-    gb[n]=0;
+    gb[n]=new game_cell();
   }
   // copygame_agent数の設定
   number_of_copygame_agents = 20;

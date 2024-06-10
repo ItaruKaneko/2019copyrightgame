@@ -1,8 +1,10 @@
+// copygame02_01
+// 2019/6/16
 // copygame_agentのクラスの定義
 // 初期化
 // gb 長さ600の配列
-// copygame01_01 ルール
-// エージェントが 高さ0の位置の場合のみ状態が変換する
+// copygame01_02 ルール
+// エージェントは2タイプ
 //   マークされている場合
 //     エネルギーが増える
 //     エネルギー分ジャンプする
@@ -10,8 +12,15 @@
 //      マークする
 //   高さ0以外の場合
 //     自由運動する
+// 前のバージョンからの変更
+//   game_cell を構造体に修正
 
-
+// class definition : game_cell
+// ゲームのます目の定義
+function game_cell() {
+  this.st = 0; // status = 0
+  this.mark = 0;    // copy game agent marking here
+}
 
 // (ix,iy)は (x.y)の整数値
 // 初期化により x,vx はランダムに
@@ -31,29 +40,31 @@ function copygame_agent(gb1) {
 
 // move : 移動
 // 一番上（iy=0) 
-//   gb[this.ix]=0 なら gb[this.ix]を1に
-//   gb[this.ix]=1 なら
+//   gb[this.ix].st=0 なら gb[this.ix].stを1に
+//   gb[this.ix].st=1 なら
 // y座標を1, vyを10にする
 
 copygame_agent.prototype.move = function() {
   this.ix=Math.floor(this.x);
+  if(this.ix < 0 || this.ix>=600) {
+     console("heelo")
+  }
   this.iy=Math.floor(this.y);
-//  if (this.iy==0) this.gb[this.ix]=0;
   if (this.x < 10  || this.x > 580) {
     this.vx = - this.vx;
   }
 
   if (this.iy==0) {
-    if (this.gb[this.ix]==1) {
+    if (this.gb[this.ix].st==1) {
       // マーク済の位置にあれば、ジャンプ
       this.y = 1;
       this.vy = this.ep; // エネルギー分ジャンプ
-      this.gb[this.ix] = 0;
+      this.gb[this.ix].st = 0;
       this.ep = this.ep + 1;  // エネルギー増加
     }
     else {
       // マークがなければそのままの位置でマーク
-      this.gb[this.ix] = 1;
+      this.gb[this.ix].st = 1;
     }
   }
   // gravity
@@ -62,6 +73,8 @@ copygame_agent.prototype.move = function() {
   }
   // motion
   this.x += this.vx;
+  if (this.x <0) this.x=0;
+  if (this.x>=600) this.x=599;
   this.y += this.vy;
   // collision with ground
   if (this.y<0) {
