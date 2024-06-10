@@ -43,12 +43,12 @@ function draw_canvas() {
   copygame_agents = new Array(number_of_copygame_agents);  
   // 全copygame_agentの初期化
   for (var n = 0; n < 5; n++) {
-    copygame_agents[n]=new copygame_agent(gb,1);
+    copygame_agents[n]=new copygame_agent(n,gb,1);
   }
   for (var n = 5; n < number_of_copygame_agents; n++) {
-    copygame_agents[n]=new copygame_agent(gb,2);
+    copygame_agents[n]=new copygame_agent(n,gb,2);
   }
 
   // tick1 を毎秒 30 回実行するための設定
-  setInterval(tick1, 33);
+  setInterval(tick1, 100);
 }
